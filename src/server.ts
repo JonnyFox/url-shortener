@@ -46,7 +46,8 @@ app.get('/new/*', async (req, res, next) => {
         let entries: Item[] = await urls.find(response).toArray();
         if (!entries.length) {
             let opResult = await urls.insert(response);
-            response.short_url = composeShortUrl(<string><any>opResult.insertedId);
+            response.short_url = composeShortUrl((<any>response)._id);
+            delete (<any>response)._id;
         } else {
             await urls.update(response, {
                 $set: {
