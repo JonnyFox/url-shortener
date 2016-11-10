@@ -77,6 +77,7 @@ app.get('/go/:id', async (req, res, next) => {
     }
 });
 app.get('/*', (req, res) => {
+    console.log(path.join(__dirname, '/index.html'));
     res.sendFile(path.join(__dirname, '/index.html'));
 });
 
