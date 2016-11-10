@@ -30,6 +30,11 @@ app.use('/new/*', (req, res, next) => {
             .json({ error: 'Invalid url' });
     } else next();
 });
+
+function composeShortUrl(id: string) {
+    return `${configService.applicationHost}/go/${id}`;
+}
+
 app.get('/new/*', async (req, res, next) => {
     let url = req.params[0];
     try {
@@ -41,14 +46,14 @@ app.get('/new/*', async (req, res, next) => {
         let entries: Item[] = await urls.find(response).toArray();
         if (!entries.length) {
             let opResult = await urls.insert(response);
-            response.short_url = <string><any>opResult.insertedId;
+            response.short_url = composeShortUrl(<string><any>opResult.insertedId);
         } else {
             await urls.update(response, {
                 $set: {
                     original_url: url
                 }
             });
-            response.short_url = `localhost:8999/go/${(<any>entries[0])._id}`;
+            response.short_url = composeShortUrl((<any>entries[0])._id);
         }
         return res.status(200)
             .json(response);
@@ -60,7 +65,7 @@ app.get('/go/:id', async (req, res, next) => {
     try {
         let mongoService = container.get(MongoService);
         let urls = await mongoService.getUrlsCollection();
-        let entries: Item[] = await urls.find({ _id: new ObjectID(req.params.id )}).toArray();
+        let entries: Item[] = await urls.find({ _id: new ObjectID(req.params.id) }).toArray();
         if (!entries.length) {
             throw { err: `Unable to find entry _id ${req.params.id}` };
         }

@@ -12,7 +12,8 @@
             "outFiles": [],
             "sourceMaps": true,
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "MONGODB_URI": "mongodb://admin:onnox831!@ds151117.mlab.com:51117/url-shortener"
             }
         },
         {
